@@ -26,6 +26,7 @@ final class AiSummaryControllerTest extends TestCase {
 		self::assertArrayHasKey('openai', $models);
 		self::assertArrayHasKey('anthropic', $models);
 		self::assertArrayHasKey('gemini', $models);
+		self::assertArrayHasKey('mistral', $models);
 		self::assertArrayHasKey('ollama', $models);
 	}
 
@@ -145,6 +146,13 @@ final class AiSummaryControllerTest extends TestCase {
 	public function testCallGeminiMethodSignature(): void {
 		$ref = new \ReflectionMethod(FreshExtension_AiSummary_Controller::class, 'callGemini');
 		self::assertSame(4, $ref->getNumberOfParameters());
+	}
+
+	public function testCallMistralMethodSignature(): void {
+		$ref = new \ReflectionMethod(FreshExtension_AiSummary_Controller::class, 'callMistral');
+		self::assertSame(4, $ref->getNumberOfParameters());
+		$params = array_map(fn ($p) => $p->getName(), $ref->getParameters());
+		self::assertSame(['apiKey', 'model', 'systemPrompt', 'userPrompt'], $params);
 	}
 
 	public function testCallOllamaMethodSignature(): void {

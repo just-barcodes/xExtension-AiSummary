@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FreshRSS extension that adds AI-powered article summarization. Supports OpenAI (ChatGPT), Anthropic (Claude), Google (Gemini), and Ollama as AI providers. Licensed under GPL v3.
+FreshRSS extension that adds AI-powered article summarization. Supports OpenAI (ChatGPT), Anthropic (Claude), Google (Gemini), Mistral, and Ollama as AI providers. Licensed under GPL v3.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ This is a FreshRSS extension (PHP 8.1+ / JS). The extension class is `AiSummaryE
 ### Key Files
 
 - `extension.php` — Main extension class. Registers hooks (`entry_before_display` to inject the summary UI into articles), loads static assets, handles configuration save.
-- `Controllers/AiSummaryController.php` — Backend endpoint that proxies AI API calls. Contains provider-specific methods (`callOpenAI`, `callAnthropic`, `callGemini`, `callOllama`). API keys never leave the server.
+- `Controllers/AiSummaryController.php` — Backend endpoint that proxies AI API calls. Contains provider-specific methods (`callOpenAI`, `callAnthropic`, `callGemini`, `callMistral`, `callOllama`; OpenAI and Mistral share `callOpenAICompatible`). API keys never leave the server.
 - `configure.phtml` — Settings form (provider, API key, model, API URL for Ollama, custom prompt).
 - `static/script.js` — Click handler for summarize buttons, toolbar button injection via MutationObserver, basic markdown→HTML formatting.
 - `static/style.css` — Summary container styling with dark theme support.

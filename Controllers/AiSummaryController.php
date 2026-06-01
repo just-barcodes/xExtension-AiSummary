@@ -8,6 +8,7 @@ final class FreshExtension_AiSummary_Controller extends Minz_ActionController {
 		'openai' => 'gpt-4o-mini',
 		'anthropic' => 'claude-sonnet-4-6',
 		'gemini' => 'gemini-2.5-flash',
+		'mistral' => 'mistral-small-latest',
 		'ollama' => 'llama3.2',
 	];
 
@@ -170,6 +171,7 @@ PROMPT;
 				'openai' => $this->callOpenAI($apiKey, $model !== '' ? $model : self::DEFAULT_MODELS['openai'], $systemPrompt, $userPrompt),
 				'anthropic' => $this->callAnthropic($apiKey, $model !== '' ? $model : self::DEFAULT_MODELS['anthropic'], $systemPrompt, $userPrompt),
 				'gemini' => $this->callGemini($apiKey, $model !== '' ? $model : self::DEFAULT_MODELS['gemini'], $systemPrompt, $userPrompt),
+				'mistral' => $this->callMistral($apiKey, $model !== '' ? $model : self::DEFAULT_MODELS['mistral'], $systemPrompt, $userPrompt),
 				'ollama' => $this->callOllama(
 					$apiUrl !== '' ? $apiUrl : self::DEFAULT_OLLAMA_URL,
 					$model !== '' ? $model : self::DEFAULT_MODELS['ollama'],
@@ -210,6 +212,14 @@ PROMPT;
 	}
 
 	private function callOpenAI(string $apiKey, string $model, string $systemPrompt, string $userPrompt): void {
+		$this->callOpenAICompatible('https://api.openai.com/v1/chat/completions', $apiKey, $model, $systemPrompt, $userPrompt);
+	}
+
+	private function callMistral(string $apiKey, string $model, string $systemPrompt, string $userPrompt): void {
+		$this->callOpenAICompatible('https://api.mistral.ai/v1/chat/completions', $apiKey, $model, $systemPrompt, $userPrompt);
+	}
+
+	private function callOpenAICompatible(string $url, string $apiKey, string $model, string $systemPrompt, string $userPrompt): void {
 		$messages = [];
 		if ($systemPrompt !== '') {
 			$messages[] = ['role' => 'system', 'content' => $systemPrompt];
@@ -217,7 +227,7 @@ PROMPT;
 		$messages[] = ['role' => 'user', 'content' => $userPrompt];
 
 		$this->curlStreamRequest(
-			'https://api.openai.com/v1/chat/completions',
+			$url,
 			['model' => $model, 'messages' => $messages, 'max_tokens' => 1024, 'stream' => true],
 			['Authorization: Bearer ' . $apiKey, 'Content-Type: application/json'],
 			function (string $line): void {

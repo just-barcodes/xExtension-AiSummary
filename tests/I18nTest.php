@@ -112,6 +112,7 @@ final class I18nTest extends TestCase {
 		self::assertStringContainsString('gpt-4o-mini', $help, "Language '{$lang}' model_help missing OpenAI default");
 		self::assertStringContainsString('claude-sonnet-4-6', $help, "Language '{$lang}' model_help missing Claude default");
 		self::assertStringContainsString('gemini-2.5-flash', $help, "Language '{$lang}' model_help missing Gemini default");
+		self::assertStringContainsString('mistral-small-latest', $help, "Language '{$lang}' model_help missing Mistral default");
 		self::assertStringContainsString('llama3.2', $help, "Language '{$lang}' model_help missing Ollama default");
 	}
 
